@@ -4,6 +4,8 @@ dotenv.config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const methodOverride = require("method-override");
+const morgan = require("morgan");
 const port = process.env.port;
 
 // MIDDLEWARE
@@ -16,33 +18,58 @@ mongoose.connection.on("connected", () => {
 const Car = require("./models/car.js");
 
 app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method"));
+app.use(morgan("dev"));
 
 // ROUTES
 
-//INDEX
-// GET /ROOT ROUTE
+// HOME
 app.get("/", async (req, res) => {
   res.render("index.ejs");
 });
 
-// New
+//INDEX
+app.get("/cars", async (req, res) => {
+  const allCars = await Car.find();
+  res.render("cars/index.ejs", { cars: allCars });
+});
+
+// NEW
 app.get("/cars/new", (req, res) => {
   res.render("cars/new.ejs");
 });
-// D.
 
-// U.
+// DESTROY
+app.delete("/cars/:carId", async (req, res) => {
+  await Car.findByIdAndDelete(req.params.carId);
+  res.redirect("/cars");
+});
+
+// UPDATE
+app.put("/cars/:carId", async (req, res) => {
+  await Car.findByIdAndUpdate(req.params.carId, req.body);
+  res.redirect(`/cars/${req.params.carId}`);
+});
 
 // Create
-//POST /cars
 app.post("/cars", async (req, res) => {
   await Car.create(req.body);
   res.redirect("/cars/new");
 });
 
-// E.
+// EDIT
+app.get("/cars/:carId/edit", async (req, res) => {
+  const foundCar = await Car.findById(req.params.carId);
+  res.render("cars/edit.ejs", {
+    car: foundCar,
+  });
+});
 
-// S.
+// SHOW
+app.get("/cars/:carId", async (req, res) => {
+  const foundCar = await Car.findById(req.params.carId);
+  res.render("cars/show.ejs", { car: foundCar });
+});
 
 //PORT
 app.listen(port, () => {

@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add a Car!</title>
+    <title>Edit <%= fullCarName %></title>
   </head>
-
+  <% fullCarName = `${car.make} ${car.model}` %>
   <body>
-    <h1>Add Your Favorite Cars!</h1>
-    <form action="/cars" method="POST">
+    <h1>Edit <%= fullCarName %></h1>
+    <form action="/cars/<%=car._id%>?_method=PUT" method="POST">
       <label for="year">Year:</label>
-      <input type="text" name="year" id="year" />
+      <input type="text" name="year" value="<%=car.year%>" />
 
       <label for="make">Make:</label>
-      <select id="make" name="make">
+      <select id="make" name="make" value="<%= car.make %>">
         <option value="">-- Select a Manufacturer --</option>
         <option value="acura">Acura</option>
         <option value="alfa-romeo">Alfa Romeo</option>
@@ -72,10 +72,11 @@
       </select>
 
       <label for="model">Model:</label>
-      <input type="text" name="model" id="model" />
+      <input type="text" name="model" value="<%= car.model %>" />
 
-      <button type="submit">Add Car</button>
+      <button type="submit">Update Car</button>
     </form>
     <a href="/cars">Back to Your Cars</a>
+    <a href="/cars/<%= car._id %>">Back to <%= fullCarName %></a>
   </body>
 </html>
