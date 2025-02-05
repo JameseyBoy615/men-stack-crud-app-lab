@@ -54,7 +54,7 @@ app.put("/cars/:carId", async (req, res) => {
 // Create
 app.post("/cars", async (req, res) => {
   await Car.create(req.body);
-  res.redirect("/cars/new");
+  res.redirect("/cars");
 });
 
 // EDIT
